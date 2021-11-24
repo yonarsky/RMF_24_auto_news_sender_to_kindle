@@ -1,3 +1,8 @@
+'''Type your mails and password'''
+sender_email = 'mymail@mail.mail'
+receiver_email = 'my_mail@kindle.com'
+password = 'my_password'
+
 import requests
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
@@ -24,10 +29,7 @@ if not os.path.exists('sended'):
     os.mkdir('sended')
     print("Directory " , 'sended' ,  " Created ")
 
-'''Type your mails and password'''
-sender_email = 'mymail@mail.mail'
-receiver_email = 'my_mail@kindle.com'
-password = 'my_password'
+
 
 # to avoid ssl errors
 ctx = ssl.create_default_context()
