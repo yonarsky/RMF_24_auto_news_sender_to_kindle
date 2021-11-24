@@ -31,7 +31,6 @@ if not os.path.exists('sended'):
     os.mkdir('sended')
     print("Directory " , 'sended' ,  " Created ")
 
-
 # to avoid ssl errors
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
@@ -52,7 +51,6 @@ links = np.array([])
 for link in soup.find_all('a'):
     # print(link.get('href'))
     links = np.append(links, link.get('href'))
-
 
 correct_links = np.array([])
 for link in links:
@@ -88,10 +86,6 @@ for correct_link in correct_links:
     pages[correct_link] = current_content
 
 
-
-
-
-
 '''Sent to kindle part'''
 current_date = datetime.date.today()
 
@@ -107,13 +101,9 @@ with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f: 
             f.write('\n')
             f.write(c)
 
-
-'''
-    For the given path, get the List of all files in the directory tree
-'''
+'''    For the given path, get the List of all files in the directory tree'''
 
 onlyfiles = [f for f in listdir('files_to_sent') if isfile(join('files_to_sent', f))]
-
 
 print(onlyfiles)
 
@@ -138,7 +128,7 @@ for file in onlyfiles:
     # Add header as key/value pair to attachment part
     part.add_header(
         "Content-Disposition",
-        f"attachment; filename= {file}",
+        f"attachment; filename= {file}"
     )
 
     # Add attachment to message and convert message to string
