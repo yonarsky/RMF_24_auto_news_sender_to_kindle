@@ -92,7 +92,7 @@ pages = {}
 
 ignored_text = ['Nie przegap ważnej informacji',
                 'Skorzystaj z naszego bota >>   ',
-                'Źródło',
+                'Źródło:',
                 'Korzystanie z portalu oznacza akceptację Regulaminu. Polityka Cookies. Prywatność. Copyright by Radio Muzyka Fakty Grupa RMF sp. z o.o. sp. k. 2009-2021. Wszystkie prawa zastrzeżone.'
                 ]
 
@@ -118,6 +118,11 @@ current_date = datetime.date.today()
 
 # make a txt file with news
 with open(f"files_to_sent/RMF_{current_date}.html", "w", encoding="utf-8") as f:   # Opens file and casts as f
+    f.write('<html>')
+    f.write('<head>')
+    f.write('<meta http-equiv="content-type" content="text/html; charset=UTF-8">')
+    f.write('</head>')
+    f.write('<body>')
     for link, content in pages.items():
         f.write('<br>')
         f.write('<p>')
@@ -129,6 +134,8 @@ with open(f"files_to_sent/RMF_{current_date}.html", "w", encoding="utf-8") as f:
             f.write('<p>')
             f.write(c)
             f.write('</p>')
+    f.write('</body>')
+    f.write('</html>')
 
 '''    For the given path, get the List of all files in the directory tree'''
 
