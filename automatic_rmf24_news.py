@@ -86,11 +86,7 @@ for correct_link in correct_links:
 
 
 
-# for link, content in pages.items():
-#     print('\n')
-#     print(link)
-#     for c in content:
-#         print(c)
+
 
 
 '''Sent to kindle part'''
@@ -106,8 +102,7 @@ with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f: 
         for c in content:
             f.write('\n')
             f.write(c)
-    # Writing
-    # File closed automatically
+
 
 '''
     For the given path, get the List of all files in the directory tree
@@ -116,8 +111,6 @@ from os import listdir
 from os.path import isfile, join
 onlyfiles = [f for f in listdir('files_to_sent') if isfile(join('files_to_sent', f))]
 
-# filename_path = "files_to_sent/test.txt"  # In same directory as script
-# filename = 'test.txt'
 
 print(onlyfiles)
 
