@@ -88,6 +88,13 @@ pages = {}
 # page_soup = BeautifulSoup(test_page.content, 'html.parser')
 # pprint(page_soup)
 
+#get rid of some useless messages
+
+ignored_text = ['Nie przegap ważnej informacji',
+                'Skorzystaj z naszego bota >>   ',
+                'Korzystanie z portalu oznacza akceptację Regulaminu. Polityka Cookies. Prywatność. Copyright by Radio Muzyka Fakty Grupa RMF sp. z o.o. sp. k. 2009-2021. Wszystkie prawa zastrzeżone.'
+                ]
+
 for correct_link in correct_links:
     # print('\n')
     # print(correct_link)
@@ -97,9 +104,11 @@ for correct_link in correct_links:
 
     current_content = []
     for content in page_soup.find_all('p'):
+        if content.get_text() in ignored_text:
+            continue
         current_content.append(content.get_text())
         # page_content.append(content.get_text())
-        # print(content.get_text())
+        print(content.get_text())
     pages[correct_link] = current_content
 
 
