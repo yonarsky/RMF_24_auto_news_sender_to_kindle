@@ -102,15 +102,19 @@ for correct_link in correct_links:
     test_page = requests.get(correct_link)
     page_soup = BeautifulSoup(test_page.content, 'html.parser')
     # page_links.append(correct_link)
-
+    headline_and_content = {}
     current_content = []
     for content in page_soup.find_all('p'):
         if content.get_text() in ignored_text:
             continue
+        headline = page_soup.find('h1').text.strip()
+        # print(headline)
         current_content.append(content.get_text())
         # page_content.append(content.get_text())
+        # print(correct_link)
         # print(content.get_text())
-    pages[correct_link] = current_content
+    headline_and_content[headline] = current_content
+    pages[correct_link] = headline_and_content
 
 
 '''Sent to kindle part'''
@@ -124,15 +128,17 @@ with open(f"files_to_sent/RMF_{current_date}.html", "w", encoding="utf-8") as f:
     f.write('</head>')
     f.write('<body>')
     for link, content in pages.items():
-        f.write('<br>')
-        f.write('<p>')
-        f.write(link)
-        f.write('</p>')
 
-        f.write('<br>')
-        for c in content:
+        for headline, text in content.items():
             f.write('<p>')
-            f.write(c)
+            f.write('<h3>')
+            f.write(headline)
+            f.write('</h3>')
+            f.write('<p>')
+            f.write(link)
+            f.write('</p>')
+            for t in text:
+                f.write(t)
             f.write('</p>')
     f.write('</body>')
     f.write('</html>')
