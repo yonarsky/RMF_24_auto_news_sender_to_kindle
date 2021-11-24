@@ -31,117 +31,131 @@ if not os.path.exists('sended'):
     os.mkdir('sended')
     print("Directory " , 'sended' ,  " Created ")
 
+current_date = datetime.date.today()
+#clear existing file
+with open(f"files_to_sent/RMF_{current_date}.html", "w", encoding="utf-8") as f:   # Opens file and casts as f
+    f.write('')
 # to avoid ssl errors
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
-url='https://www.rmf24.pl/fakty'
+# url='https://www.rmf24.pl/fakty'
+# url = 'https://www.rmf24.pl/fakty,nPack,2'
+# url = 'https://www.rmf24.pl/fakty,nPack,3'
+# url = 'https://www.rmf24.pl/fakty,nPack,4'
+# url = 'https://www.rmf24.pl/fakty,nPack,5'
+urls = ['https://www.rmf24.pl/fakty',
+         'https://www.rmf24.pl/fakty,nPack,2',
+         'https://www.rmf24.pl/fakty,nPack,3',
+         'https://www.rmf24.pl/fakty,nPack,4',
+         'https://www.rmf24.pl/fakty,nPack,5']
+for url in urls:
+    page = requests.get(url)
 
-page = requests.get(url)
+    # pprint(page.text)
 
-# pprint(page.text)
+    # make soup
+    soup = BeautifulSoup(page.text, 'html.parser')
+    # pprint(soup)
 
-# make soup
-soup = BeautifulSoup(page.text, 'html.parser')
-# pprint(soup)
+    # find all links on the page
+    links = np.array([])
+    for link in soup.find_all('a'):
+        # print(link.get('href'))
+        links = np.append(links, link.get('href'))
 
-# find all links on the page
-links = np.array([])
-for link in soup.find_all('a'):
-    # print(link.get('href'))
-    links = np.append(links, link.get('href'))
+    correct_links = np.array([])
 
-correct_links = np.array([])
+    # don't need to track some specific pages
+    ignore_list = ['/raporty/raport-koronawirus-z-chin/szczepienia-przeciw-covid19',
+                   '/raporty/raport-stan-wyjatkowy',
+                   '/raporty/raport-koronawirus-z-chin/najnowsze-fakty',
+                   '/fakty/swiat',
+                   '/raporty/raport-koronawirus-z-chin/polska',
+                   '/raporty/raport-koronawirus-z-chin/komentarze-ekspertow',
+                   '/fakty/polska',
+                   '/raporty/raport-koronawirus-z-chin/gospodarka',
+                   '/raporty/raport-koronawirus-z-chin/europa',
+                   '/raporty/raport-koronawirus-z-chin/porady',
+                   '/raporty/raport-lepsze-jutro'
+                   ]
 
-# don't need to track some specific pages
-ignore_list = ['/raporty/raport-koronawirus-z-chin/szczepienia-przeciw-covid19',
-               '/raporty/raport-stan-wyjatkowy',
-               '/raporty/raport-koronawirus-z-chin/najnowsze-fakty',
-               '/fakty/swiat',
-               '/raporty/raport-koronawirus-z-chin/polska',
-               '/raporty/raport-koronawirus-z-chin/komentarze-ekspertow',
-               '/fakty/polska',
-               '/raporty/raport-koronawirus-z-chin/gospodarka',
-               '/raporty/raport-koronawirus-z-chin/europa',
-               '/raporty/raport-koronawirus-z-chin/porady',
-               '/raporty/raport-lepsze-jutro'
-               ]
+    for link in links:
+        if link.startswith('/raporty/raport') or link.startswith('/fakty/'): # take only news
+            if link in ignore_list:
+                continue
+            link =  'https://www.rmf24.pl' + link
+            correct_links = np.append(correct_links, link)
 
-for link in links:
-    if link.startswith('/raporty/raport') or link.startswith('/fakty/'): # take only news
-        if link in ignore_list:
-            continue
-        link =  'https://www.rmf24.pl' + link
-        correct_links = np.append(correct_links, link)
+    correct_links = np.array(list(set(correct_links)))
+    # print(correct_links[0])
+    # test_page = requests.get(correct_links[0])
+    # print(test_page.text)
 
-correct_links = np.array(list(set(correct_links)))
-# print(correct_links[0])
-# test_page = requests.get(correct_links[0])
-# print(test_page.text)
+    # page_content = []
+    # page_links = []
 
-# page_content = []
-# page_links = []
+    # dict to store links and their content
+    pages = {}
+    # page_soup = BeautifulSoup(test_page.content, 'html.parser')
+    # pprint(page_soup)
 
-# dict to store links and their content
-pages = {}
-# page_soup = BeautifulSoup(test_page.content, 'html.parser')
-# pprint(page_soup)
+    #get rid of some useless messages
 
-#get rid of some useless messages
+    ignored_text = ['Nie przegap ważnej informacji',
+                    'Skorzystaj z naszego bota >>   ',
+                    'Źródło:',
+                    'Korzystanie z portalu oznacza akceptację Regulaminu. Polityka Cookies. Prywatność. Copyright by Radio Muzyka Fakty Grupa RMF sp. z o.o. sp. k. 2009-2021. Wszystkie prawa zastrzeżone.'
+                    ]
 
-ignored_text = ['Nie przegap ważnej informacji',
-                'Skorzystaj z naszego bota >>   ',
-                'Źródło:',
-                'Korzystanie z portalu oznacza akceptację Regulaminu. Polityka Cookies. Prywatność. Copyright by Radio Muzyka Fakty Grupa RMF sp. z o.o. sp. k. 2009-2021. Wszystkie prawa zastrzeżone.'
-                ]
-
-for correct_link in correct_links:
-    # print('\n')
-    # print(correct_link)
-    test_page = requests.get(correct_link)
-    page_soup = BeautifulSoup(test_page.content, 'html.parser')
-    # page_links.append(correct_link)
-    headline_and_content = {}
-    current_content = []
-    for content in page_soup.find_all('p'):
-        if content.get_text() in ignored_text:
-            continue
-        headline = page_soup.find('h1').text.strip()
-        # print(headline)
-        current_content.append(content.get_text())
-        # page_content.append(content.get_text())
+    for correct_link in correct_links:
+        # print('\n')
         # print(correct_link)
-        # print(content.get_text())
-    headline_and_content[headline] = current_content
-    pages[correct_link] = headline_and_content
+        test_page = requests.get(correct_link)
+        page_soup = BeautifulSoup(test_page.content, 'html.parser')
+        # page_links.append(correct_link)
+        headline_and_content = {}
+        current_content = []
+        for content in page_soup.find_all('p'):
+            if content.get_text() in ignored_text:
+                continue
+            headline = page_soup.find('h1').text.strip()
+            # print(headline)
+            current_content.append(content.get_text())
+            # page_content.append(content.get_text())
+            # print(correct_link)
+            # print(content.get_text())
+        headline_and_content[headline] = current_content
+        pages[correct_link] = headline_and_content
 
 
-'''Sent to kindle part'''
-current_date = datetime.date.today()
+    '''Sent to kindle part'''
 
-# make a txt file with news
-with open(f"files_to_sent/RMF_{current_date}.html", "w", encoding="utf-8") as f:   # Opens file and casts as f
-    f.write('<html>')
-    f.write('<head>')
-    f.write('<meta http-equiv="content-type" content="text/html; charset=UTF-8">')
-    f.write('</head>')
-    f.write('<body>')
-    for link, content in pages.items():
 
-        for headline, text in content.items():
-            f.write('<p>')
-            f.write('<h3>')
-            f.write(headline)
-            f.write('</h3>')
-            f.write('<p>')
-            f.write(link)
-            f.write('</p>')
-            for t in text:
-                f.write(t)
-            f.write('</p>')
-    f.write('</body>')
-    f.write('</html>')
+
+    # make a txt file with news
+    with open(f"files_to_sent/RMF_{current_date}.html", "a", encoding="utf-8") as f:   # Opens file and casts as f
+        f.write('<html>')
+        f.write('<head>')
+        f.write('<meta http-equiv="content-type" content="text/html; charset=UTF-8">')
+        f.write('</head>')
+        f.write('<body>')
+        for link, content in pages.items():
+
+            for headline, text in content.items():
+                f.write('<p>')
+                f.write('<h3>')
+                f.write(headline)
+                f.write('</h3>')
+                f.write('<p>')
+                f.write(link)
+                f.write('</p>')
+                for t in text:
+                    f.write(t)
+                f.write('</p>')
+        f.write('</body>')
+        f.write('</html>')
 
 '''    For the given path, get the List of all files in the directory tree'''
 
