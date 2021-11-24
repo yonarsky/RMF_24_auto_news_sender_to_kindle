@@ -140,7 +140,9 @@ for url in urls:
             for headline, text in content.items():
                 f.write('<p>')
                 f.write('<h3>')
+                f.write('<a href="' + link + '">')
                 f.write(headline)
+                f.write('</a>')
                 f.write('</h3>')
                 f.write('<p>')
                 f.write(link)
