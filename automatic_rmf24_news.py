@@ -19,6 +19,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import datetime
 import time
+from os import listdir
+from os.path import isfile, join
 
 print("This program does not support polish characters in file's name.")
 if not os.path.exists('files_to_sent'):
@@ -94,6 +96,7 @@ for correct_link in correct_links:
 '''Sent to kindle part'''
 current_date = datetime.date.today()
 
+# make a txt file with news
 with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f:   # Opens file and casts as f
     for link, content in pages.items():
         f.write('\n')
@@ -109,8 +112,7 @@ with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f: 
 '''
     For the given path, get the List of all files in the directory tree
 '''
-from os import listdir
-from os.path import isfile, join
+
 onlyfiles = [f for f in listdir('files_to_sent') if isfile(join('files_to_sent', f))]
 
 
