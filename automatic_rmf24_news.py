@@ -6,6 +6,14 @@ from pprint import pprint
 import ssl
 import numpy as np
 import os
+import email, smtplib, ssl
+import os
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import datetime
+import time
 
 print("This program does not support polish characters in file's name.")
 if not os.path.exists('files_to_sent'):
@@ -21,12 +29,10 @@ sender_email = 'mymail@mail.mail'
 receiver_email = 'my_mail@kindle.com'
 password = 'my_password'
 
-
 # to avoid ssl errors
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
-
 
 url='https://www.rmf24.pl/fakty'
 
@@ -34,32 +40,34 @@ page = requests.get(url)
 
 # pprint(page.text)
 
+# make soup
 soup = BeautifulSoup(page.text, 'html.parser')
 # pprint(soup)
 
+# find all links on the page
 links = np.array([])
 for link in soup.find_all('a'):
     # print(link.get('href'))
     links = np.append(links, link.get('href'))
 
-# links = np.sort(links)
-# print(links)
 
 correct_links = np.array([])
 for link in links:
-    if link.startswith('/raporty/raport') or link.startswith('/fakty/'):
+    if link.startswith('/raporty/raport') or link.startswith('/fakty/'): # take only news
         link =  'https://www.rmf24.pl' + link
         correct_links = np.append(correct_links, link)
 
 correct_links = np.array(list(set(correct_links)))
 # print(correct_links[0])
-test_page = requests.get(correct_links[0])
+# test_page = requests.get(correct_links[0])
 # print(test_page.text)
 
-page_content = []
-page_links = []
+# page_content = []
+# page_links = []
+
+# dict to store links and their content
 pages = {}
-page_soup = BeautifulSoup(test_page.content, 'html.parser')
+# page_soup = BeautifulSoup(test_page.content, 'html.parser')
 # pprint(page_soup)
 
 for correct_link in correct_links:
@@ -86,15 +94,6 @@ for correct_link in correct_links:
 
 
 '''Sent to kindle part'''
-
-import email, smtplib, ssl
-import os
-from email import encoders
-from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import datetime
-import time
 current_date = datetime.date.today()
 
 with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f:   # Opens file and casts as f
@@ -109,14 +108,6 @@ with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f: 
             f.write(c)
     # Writing
     # File closed automatically
-
-
-
-
-
-
-
-
 
 '''
     For the given path, get the List of all files in the directory tree
