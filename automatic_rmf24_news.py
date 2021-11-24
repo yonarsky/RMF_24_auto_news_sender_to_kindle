@@ -5,6 +5,16 @@ import csv
 from pprint import pprint
 import ssl
 import numpy as np
+import os
+
+print("This program does not support polish characters in file's name.")
+if not os.path.exists('files_to_sent'):
+    os.mkdir('files_to_sent')
+    print("Directory " , 'files_to_sent' ,  " Created ")
+
+if not os.path.exists('sended'):
+    os.mkdir('sended')
+    print("Directory " , 'sended' ,  " Created ")
 
 '''Type your mails and password'''
 sender_email = 'mymail@mail.mail'
