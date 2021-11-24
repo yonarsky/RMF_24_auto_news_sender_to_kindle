@@ -113,14 +113,6 @@ with open(f"files_to_sent/RMF_{current_date}.txt", "w", encoding="utf-8") as f: 
 
 
 
-print("This program does not support polish characters in file's name.")
-if not os.path.exists('files_to_sent'):
-    os.mkdir('files_to_sent')
-    print("Directory " , 'files_to_sent' ,  " Created ")
-
-if not os.path.exists('sended'):
-    os.mkdir('sended')
-    print("Directory " , 'sended' ,  " Created ")
 
 
 
