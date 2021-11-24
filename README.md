@@ -5,8 +5,8 @@ This script automatically sent files from files_to_sent folder to your kindle an
 Remember, you must do something like **Turn Allow less secure apps to ON in your email service** (gmail in this example)
 
 Required packages:
-requests
-bs4 
-numpy
+requests;
+bs4;
+numpy;
 
 
