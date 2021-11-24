@@ -53,8 +53,25 @@ for link in soup.find_all('a'):
     links = np.append(links, link.get('href'))
 
 correct_links = np.array([])
+
+# don't need to track some specific pages
+ignore_list = ['/raporty/raport-koronawirus-z-chin/szczepienia-przeciw-covid19',
+               '/raporty/raport-stan-wyjatkowy',
+               '/raporty/raport-koronawirus-z-chin/najnowsze-fakty',
+               '/fakty/swiat',
+               '/raporty/raport-koronawirus-z-chin/polska',
+               '/raporty/raport-koronawirus-z-chin/komentarze-ekspertow',
+               '/fakty/polska',
+               '/raporty/raport-koronawirus-z-chin/gospodarka',
+               '/raporty/raport-koronawirus-z-chin/europa',
+               '/raporty/raport-koronawirus-z-chin/porady',
+               '/raporty/raport-lepsze-jutro'
+               ]
+
 for link in links:
     if link.startswith('/raporty/raport') or link.startswith('/fakty/'): # take only news
+        if link in ignore_list:
+            continue
         link =  'https://www.rmf24.pl' + link
         correct_links = np.append(correct_links, link)
 
