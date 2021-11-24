@@ -40,11 +40,7 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
-# url='https://www.rmf24.pl/fakty'
-# url = 'https://www.rmf24.pl/fakty,nPack,2'
-# url = 'https://www.rmf24.pl/fakty,nPack,3'
-# url = 'https://www.rmf24.pl/fakty,nPack,4'
-# url = 'https://www.rmf24.pl/fakty,nPack,5'
+
 urls = ['https://www.rmf24.pl/fakty',
          'https://www.rmf24.pl/fakty,nPack,2',
          'https://www.rmf24.pl/fakty,nPack,3',
