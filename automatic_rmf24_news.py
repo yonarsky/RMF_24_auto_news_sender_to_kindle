@@ -132,8 +132,6 @@ for url in urls:
 
     '''Sent to kindle part'''
 
-
-
     # make a txt file with news
     with open(f"files_to_sent/RMF_{current_date}.html", "a", encoding="utf-8") as f:   # Opens file and casts as f
         f.write('<html>')
